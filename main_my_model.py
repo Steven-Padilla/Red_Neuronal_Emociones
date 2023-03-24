@@ -22,12 +22,12 @@ train_data_dir = './images/train'
 val_data_dir = './images/validation'
 
 # Definimos algunos parámetros importantes
-width_shape = 48
-height_shape = 48
+width_shape = 200
+height_shape = 200
 num_classes = 4
 epochs = 50
 batch_size = 32
-class_names = ['angry','happy','neutral','sad']
+class_names = ['enojado','feliz','serio','triste']
 
 # Configuramos el dataset de entrenamiento y validación
 train_datagen = ImageDataGenerator()
@@ -37,7 +37,7 @@ train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(width_shape, height_shape),
     batch_size=batch_size,
-    color_mode='grayscale',
+    color_mode='rgb',
     class_mode='categorical',
     shuffle=True
     )
@@ -46,7 +46,7 @@ val_generator = val_datagen.flow_from_directory(
     val_data_dir,
     target_size=(width_shape, height_shape),
     batch_size=batch_size,
-    color_mode='grayscale',
+    color_mode='rgb',
     class_mode='categorical',
     shuffle=True
     )
@@ -57,7 +57,7 @@ val_generator = val_datagen.flow_from_directory(
 model = Sequential()
 
 ## Extracción de Características
-model.add(Conv2D(32,(3,3),padding = 'same',input_shape = (width_shape,height_shape,1)))
+model.add(Conv2D(32,(3,3),padding = 'same',input_shape = (width_shape,height_shape,3)))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPool2D(pool_size = (2,2)))
@@ -129,14 +129,14 @@ model.fit(
     callbacks=[tensorboard_callback]
     )
 
-model.save("modelFEC.h5")
+model.save("modelo_1.h5")
 
 
 
 faces = []
 
 # Cargamos una imagen del directorio
-imaget_path = "/images/validation/happy/8.jpg"
+imaget_path = "/images/validation/feliz/foto492.jpg"
 
 # Redimensionamos la imagen y convertimos a gray
 face = cv2.cvtColor(cv2.imread(imaget_path), cv2.COLOR_BGR2GRAY)
@@ -164,7 +164,7 @@ val_generator = val_datagen.flow_from_directory(
     val_data_dir,
     target_size=(width_shape, height_shape),
     batch_size=batch_size,
-    color_mode='grayscale',
+    color_mode='rgb',
     class_mode='categorical',shuffle=False)
 
 predictions = model.predict(val_generator)
